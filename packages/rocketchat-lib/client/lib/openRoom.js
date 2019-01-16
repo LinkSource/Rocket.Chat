@@ -1,14 +1,14 @@
-/* globals fireGlobalEvent readMessage currentTracker*/
 import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { Session } from 'meteor/session';
+import { RoomManager } from 'meteor/rocketchat:ui-utils';
 import _ from 'underscore';
 
-currentTracker = undefined;
+export let currentTracker = undefined;
 
-function openRoom(type, name) {
+openRoom = function(type, name) {
 	Session.set('openedRoom', null);
 
 	return Meteor.defer(() =>
@@ -69,7 +69,7 @@ function openRoom(type, name) {
 			}
 
 			Session.set('openedRoom', room._id);
-			RocketChat.openedRoom = room._id;
+			RoomManager.openedRoom = room._id;
 
 			fireGlobalEvent('room-opened', _.omit(room, 'usernames'));
 
@@ -95,6 +95,4 @@ function openRoom(type, name) {
 			return RocketChat.callbacks.run('enter-room', sub);
 		})
 	);
-}
-export { openRoom };
-this.openRoom = openRoom;
+};
